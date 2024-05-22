@@ -1,7 +1,7 @@
-package com.dmtrmrzv.kindpeople.repository;
+package com.dmtrmrzv.kindpeople.repositories;
 
-import com.dmtrmrzv.kindpeople.entity.Post;
-import com.dmtrmrzv.kindpeople.entity.User;
+import com.dmtrmrzv.kindpeople.entities.Post;
+import com.dmtrmrzv.kindpeople.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

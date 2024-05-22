@@ -1,4 +1,4 @@
-package com.dmtrmrzv.kindpeople.entity.enums;
+package com.dmtrmrzv.kindpeople.entities.enums;
 
 public enum ERole {
     ROLE_USER,

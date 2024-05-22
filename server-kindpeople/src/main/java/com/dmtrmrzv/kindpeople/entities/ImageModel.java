@@ -1,4 +1,4 @@
-package com.dmtrmrzv.kindpeople.entity;
+package com.dmtrmrzv.kindpeople.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

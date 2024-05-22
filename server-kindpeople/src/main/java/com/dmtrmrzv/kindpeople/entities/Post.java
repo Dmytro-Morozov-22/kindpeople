@@ -1,4 +1,4 @@
-package com.dmtrmrzv.kindpeople.entity;
+package com.dmtrmrzv.kindpeople.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
