@@ -1,8 +1,9 @@
 package com.dmtrmrzv.kindpeople.annotations;
 
+import com.dmtrmrzv.kindpeople.validations.EmailValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
+
 
 
 import java.lang.annotation.ElementType;
