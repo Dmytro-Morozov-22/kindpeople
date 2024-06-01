@@ -5,7 +5,6 @@ import com.dmtrmrzv.kindpeople.entities.enums.ERole;
 import com.dmtrmrzv.kindpeople.exceptions.UserExistException;
 import com.dmtrmrzv.kindpeople.payload.request.SignupRequest;
 import com.dmtrmrzv.kindpeople.repositories.UserRepository;
-import com.dmtrmrzv.kindpeople.security.JWTAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,8 @@ public class UserService {
     public User createUser(SignupRequest userIn) {
         User user = new User();
         user.setEmail(userIn.getEmail());
-        user.setName(userIn.getFirstName());
-        user.setLastname(userIn.getLastName());
+        user.setName(userIn.getFirstname());
+        user.setLastname(userIn.getLastname());
         user.setUsername(userIn.getUsername());
         user.setPassword(passwordEncoder().encode(userIn.getPassword()));
         user.getRole().add(ERole.ROLE_USER);
@@ -40,7 +39,6 @@ public class UserService {
             LOG.error("Error during registration. {}", e.getMessage());
             throw new UserExistException("The user " + user.getUsername() + "already exist. Please check credentials");
         }
-
     }
 
     @Bean

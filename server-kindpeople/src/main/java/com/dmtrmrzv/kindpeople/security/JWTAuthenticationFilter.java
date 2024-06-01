@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.User;
-import org.apache.catalina.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
-//@Component
+@Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     public static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
@@ -31,14 +30,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private  CustomUserDetailsService customUserDetailsService;
 
-//    @Autowired
-//    public JWTAuthenticationFilter(JWTTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) {
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.customUserDetailsService = customUserDetailsService;
-//    }
-
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -47,7 +38,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)){
                 Long userId = jwtTokenProvider.getUserIdFromToken(jwt);
                 User userDetails = (User) customUserDetailsService.loadUserById(userId);
-
+                System.out.println(" ---> " + userDetails.getPassword());
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, Collections.emptyList()
                 );
@@ -71,10 +62,5 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         return JWTFromRequest;
     }
-
-
-
-
-
 
 }
