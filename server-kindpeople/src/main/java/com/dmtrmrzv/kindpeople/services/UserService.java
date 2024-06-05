@@ -1,5 +1,6 @@
 package com.dmtrmrzv.kindpeople.services;
 
+import com.dmtrmrzv.kindpeople.dto.UserDTO;
 import com.dmtrmrzv.kindpeople.entities.User;
 import com.dmtrmrzv.kindpeople.entities.enums.ERole;
 import com.dmtrmrzv.kindpeople.exceptions.UserExistException;
@@ -9,9 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 @Service
 public class UserService {
@@ -26,7 +30,7 @@ public class UserService {
     public User createUser(SignupRequest userIn) {
         User user = new User();
         user.setEmail(userIn.getEmail());
-        user.setName(userIn.getFirstname());
+        user.setFirstname(userIn.getFirstname());
         user.setLastname(userIn.getLastname());
         user.setUsername(userIn.getUsername());
         user.setPassword(passwordEncoder().encode(userIn.getPassword()));
@@ -39,6 +43,24 @@ public class UserService {
             LOG.error("Error during registration. {}", e.getMessage());
             throw new UserExistException("The user " + user.getUsername() + "already exist. Please check credentials");
         }
+    }
+
+    public  User updateUser(UserDTO userDTO, Principal principal) {
+        User user = getUserByPrincipal(principal);
+        user.setFirstname(userDTO.getFirstname());
+        user.setLastname(userDTO.getLastname());
+        user.setBio(userDTO.getBio());
+        return userRepository.save(user);
+    }
+
+    public User getCurrentUser(Principal principal) {
+        return getUserByPrincipal(principal);
+    }
+
+    public User getUserByPrincipal(Principal principal) {
+        String username = principal.getName();
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found username " + username));
     }
 
     @Bean

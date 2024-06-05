@@ -37,6 +37,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
+        //FIXME in this method is used two 'return' statements. It is needed to update the method to use one 'return statement'
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
@@ -53,6 +54,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+        //FIXME in this method is used two 'return' statements. It is needed to update the method to use one 'return statement'
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if(!ObjectUtils.isEmpty(errors)) return  errors;
 
