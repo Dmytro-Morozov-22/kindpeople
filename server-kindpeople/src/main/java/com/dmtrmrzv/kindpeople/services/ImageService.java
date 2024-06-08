@@ -1,6 +1,8 @@
 package com.dmtrmrzv.kindpeople.services;
 
 import com.dmtrmrzv.kindpeople.entities.ImageModel;
+import com.dmtrmrzv.kindpeople.entities.Post;
+import com.dmtrmrzv.kindpeople.exceptions.ImageNotFoundException;
 import com.dmtrmrzv.kindpeople.repositories.ImageRepository;
 import com.dmtrmrzv.kindpeople.repositories.PostRepository;
 import com.dmtrmrzv.kindpeople.repositories.UserRepository;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Principal;
@@ -41,7 +42,7 @@ public class ImageService {
         this.userService = userService;
     }
 
-    public ImageModel uploadImageToUser(MultipartFile file, Principal principal) throws IOException {
+    public ImageModel uploadImageForUser(MultipartFile file, Principal principal) throws IOException {
         User user = userService.getUserByPrincipal(principal);
         LOG.info("Uploading image profile to User {}", user.getUsername());
 
@@ -57,13 +58,41 @@ public class ImageService {
         return imageRepository.save(imageModel);
     }
 
+    public ImageModel uploadImageForPost(MultipartFile file, Principal principal, Long postId) throws IOException {
+        User user = userService.getUserByPrincipal(principal);
+        Post post = user.getPosts().stream().filter(p -> p.getId().equals(postId)).collect(toSinglePostCollector());
+        ImageModel imageModel = new ImageModel();
+        imageModel.setPostId(post.getId());
+        imageModel.setImageBytes(file.getBytes());
+        imageModel.setImageBytes(compressBytes(file.getBytes()));
+        imageModel.setName(file.getOriginalFilename());
+        LOG.info("Uploading image profile to Post {}", post.getId());
 
+        return imageRepository.save(imageModel);
+    }
 
+    public ImageModel getImageForUser(Principal principal) {
+        User user = userService.getUserByPrincipal(principal);
 
+        ImageModel imageModel = imageRepository.findByUserId(user.getId()).orElse(null);
+        if(!ObjectUtils.isEmpty(imageModel)){
+            imageModel.setImageBytes(decompressByte(imageModel.getImageBytes()));
+        }
+        return imageModel;
+    }
 
+    public ImageModel getImageForPost(Long postId) {
+        ImageModel imageModel = imageRepository.findByPostId(postId)
+                .orElseThrow(() -> new ImageNotFoundException("Cannot find an image for the Post: " + postId));
 
+        if(!ObjectUtils.isEmpty(imageModel)){
+            imageModel.setImageBytes(decompressByte(imageModel.getImageBytes()));
+        }
+        return imageModel;
+    }
+
+    //--AUXILIARY METHODS--
     private static byte[] compressBytes(byte[] data) {
-
         Deflater deflater = new Deflater();
         deflater.setInput(data);
         deflater.finish();
@@ -117,25 +146,5 @@ public class ImageService {
                 }
         );
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

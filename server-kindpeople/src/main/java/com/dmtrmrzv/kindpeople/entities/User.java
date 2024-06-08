@@ -43,7 +43,7 @@ public class User implements UserDetails {
     private Set<ERole> role = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
-    private List<Post> post = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     @Column(updatable = false)
