@@ -68,4 +68,7 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 }
